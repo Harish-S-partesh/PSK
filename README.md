@@ -1,12 +1,67 @@
 # PSK
 # Aim
 Write a simple Python program for the modulation and demodulation of PSK and QPSK.
-# Tools required: 
-Google Colab
+# Tools required
+Google colab
 # Program
-# QPSK
+# PSK
+```
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.signal import butter, lfilter
+# Butterworth low-pass filter for demodulation
+def butter_lowpass_filter(data, cutoff, fs, order=5):
+    nyquist = 0.5 * fs
+    normal_cutoff = cutoff / nyquist
+    b, a = butter(order, normal_cutoff, btype='low', analog=False)
+    return lfilter(b, a, data)
+# Parameters
+fs = 1000                # Sampling frequency
+f_carrier = 50           # Carrier frequency
+bit_rate = 10            # Data rate (bits per second)
+T = 1                    # Total time duration in seconds
+t = np.linspace(0, T, int(fs * T), endpoint=False)
+# Message signal (binary data)
+bits = np.random.randint(0, 2, bit_rate)
+bit_duration = fs // bit_rate
+message_signal = np.repeat(bits, bit_duration)
+# PSK Modulation (0 -> 0 phase, 1 -> 180° phase shift)
+carrier = np.sin(2 * np.pi * f_carrier * t)
+psk_signal = np.sin(2 * np.pi * f_carrier * t + np.pi * message_signal)
+# PSK Demodulation
+demodulated = psk_signal * carrier
+filtered_signal = butter_lowpass_filter(demodulated, f_carrier, fs)
+decoded_bits = (filtered_signal[::bit_duration] < 0).astype(int)
+# Plotting
+plt.figure(figsize=(12, 8))
+plt.subplot(4, 1, 1)
+plt.plot(t, message_signal, label='Message Signal (Binary)', color='b')
+plt.title('Message Signal')
+plt.ylabel('Amplitude')
+plt.grid(True)
+plt.subplot(4, 1, 2)
+plt.plot(t, carrier, label='Carrier Signal', color='g')
+plt.title('Carrier Signal')
+plt.ylabel('Amplitude')
+plt.grid(True)
+plt.subplot(4, 1, 3)
+plt.plot(t, psk_signal, label='PSK Modulated Signal', color='r')
+plt.title('PSK Modulated Signal')
+plt.ylabel('Amplitude')
+plt.grid(True)
+plt.subplot(4, 1, 4)
+plt.step(np.arange(len(decoded_bits)), decoded_bits, label='Decoded Bits', color='r', marker='x')
+plt.title('Decoded Bits')
+plt.xlabel('Time')
+plt.ylabel('Bit Value')
+plt.grid(True)
+plt.legend()
+plt.tight_layout()
+plt.show()
+```
 
-#QPSK 
+# QPSK
+```
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -83,73 +138,18 @@ plt.ylim(-0.5, 1.5)
 plt.tight_layout()
 plt.grid(True)
 plt.show()
-
+```
+# Output Waveform
 # PSK
 
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy.signal import butter, lfilter
-# Butterworth low-pass filter for demodulation
-def butter_lowpass_filter(data, cutoff, fs, order=5):
-    nyquist = 0.5 * fs
-    normal_cutoff = cutoff / nyquist
-    b, a = butter(order, normal_cutoff, btype='low', analog=False)
-    return lfilter(b, a, data)
-# Parameters
-fs = 1000                # Sampling frequency
-f_carrier = 50           # Carrier frequency
-bit_rate = 10            # Data rate (bits per second)
-T = 1                    # Total time duration in seconds
-t = np.linspace(0, T, int(fs * T), endpoint=False)
-# Message signal (binary data)
-bits = np.random.randint(0, 2, bit_rate)
-bit_duration = fs // bit_rate
-message_signal = np.repeat(bits, bit_duration)
-# PSK Modulation (0 -> 0 phase, 1 -> 180° phase shift)
-carrier = np.sin(2 * np.pi * f_carrier * t)
-psk_signal = np.sin(2 * np.pi * f_carrier * t + np.pi * message_signal)
-# PSK Demodulation
-demodulated = psk_signal * carrier
-filtered_signal = butter_lowpass_filter(demodulated, f_carrier, fs)
-decoded_bits = (filtered_signal[::bit_duration] < 0).astype(int)
-# Plotting
-plt.figure(figsize=(12, 8))
-plt.subplot(4, 1, 1)
-plt.plot(t, message_signal, label='Message Signal (Binary)', color='b')
-plt.title('Message Signal')
-plt.ylabel('Amplitude')
-plt.grid(True)
-plt.subplot(4, 1, 2)
-plt.plot(t, carrier, label='Carrier Signal', color='g')
-plt.title('Carrier Signal')
-plt.ylabel('Amplitude')
-plt.grid(True)
-plt.subplot(4, 1, 3)
-plt.plot(t, psk_signal, label='PSK Modulated Signal', color='r')
-plt.title('PSK Modulated Signal')
-plt.ylabel('Amplitude')
-plt.grid(True)
-plt.subplot(4, 1, 4)
-plt.step(np.arange(len(decoded_bits)), decoded_bits, label='Decoded Bits', color='r', marker='x')
-plt.title('Decoded Bits')
-plt.xlabel('Time')
-plt.ylabel('Bit Value')
-plt.grid(True)
-plt.legend()
-plt.tight_layout()
-plt.show()
+<img width="1528" height="1011" alt="Screenshot 2025-10-06 142029" src="https://github.com/user-attachments/assets/9c318150-5d60-4da8-bdaa-374d48686e94" />
 
-# Output Waveform
+
 # QPSK
 
-<img width="852" height="537" alt="image" src="https://github.com/user-attachments/assets/420fd845-f9c4-4410-99f8-b931a663a455" />
-
-
-# PSK
-
-<img width="1190" height="790" alt="image" src="https://github.com/user-attachments/assets/5bf14c90-16aa-45e7-9742-6bd2943b4a5b" />
+<img width="1268" height="757" alt="Screenshot 2025-10-06 142135" src="https://github.com/user-attachments/assets/af719863-e0f5-4e6b-87b8-6a983e5c0980" />
 
 
 # Results
-The program for PSK and QPSK is executed and the output waveforms are obtained.
-# Hardware experiment output waveform.
+The experiment of modulation and demodulation of Phase Key Shifting and Quadriphase Key Shifting was successfully executed.
+
